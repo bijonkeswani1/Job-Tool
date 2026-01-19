@@ -15,12 +15,16 @@ An intelligent automation agent that helps you discover, analyze, and apply to j
 
 ```
 linkedin-job-agent/
-├── README.md              # This file
-├── requirements.txt       # Python dependencies
-├── .env.example          # Environment variable template
-├── .env                  # Your actual environment variables (create this)
-├── config.py             # Configuration management
-├── models.py             # Pydantic data models
+├── README.md                   # This file
+├── requirements.txt            # Python dependencies
+├── .env.example               # Environment variable template
+├── .env                       # Your actual environment variables (create this)
+├── .gitignore                 # Git ignore rules
+├── config.py                  # Configuration management
+├── models.py                  # Pydantic data models
+├── notion_client.py           # Notion API integration
+├── inspect_notion.py          # Notion database inspector utility
+├── example_notion_usage.py    # Usage examples for Notion integration
 └── [Additional modules to be created]
 ```
 
@@ -139,6 +143,33 @@ https://www.notion.so/your-workspace/DATABASE_ID?v=...
 3. Go to API section in your dashboard
 4. Copy your API key
 
+### 8. Test Your Notion Integration
+
+After setting up your API keys, inspect your Notion database:
+
+```bash
+python inspect_notion.py
+```
+
+This will:
+- Connect to your Notion database
+- Show your current database schema
+- Display application statistics
+- Recommend any missing properties for full functionality
+- Verify your integration is working correctly
+
+You can also try the example usage:
+
+```bash
+python example_notion_usage.py
+```
+
+This demonstrates how to:
+- Add jobs to your Notion database
+- Query existing applications
+- Get statistics
+- Update application status
+
 ## Usage
 
 ### Running the Application
@@ -209,10 +240,10 @@ ruff check .
 
 ## Roadmap
 
-- [ ] Job scraping module
+- [ ] Job scraping module (LinkedIn automation)
 - [ ] Claude AI integration for job matching
 - [ ] Cover letter generation
-- [ ] Notion integration
+- [x] Notion integration (✓ Complete)
 - [ ] Email discovery with Hunter.io
 - [ ] Web UI dashboard
 - [ ] Application analytics
