@@ -2,6 +2,19 @@
 
 An intelligent automation agent that helps you discover, analyze, and apply to jobs on LinkedIn. Uses Claude AI for smart job matching, cover letter generation, and application tracking through Notion.
 
+---
+
+## 🚀 **New to This? Start Here!**
+
+**Not technical?** No problem! Check out these beginner-friendly guides:
+
+- **[GETTING_STARTED.md](GETTING_STARTED.md)** - Step-by-step setup guide (even if you've never coded)
+- **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - Copy-paste commands for common tasks
+
+These guides explain everything in plain English with no technical jargon.
+
+---
+
 ## Features
 
 - **Job Discovery**: Scrape and discover jobs from LinkedIn
@@ -15,20 +28,29 @@ An intelligent automation agent that helps you discover, analyze, and apply to j
 
 ```
 linkedin-job-agent/
-├── README.md                   # This file
+├── README.md                   # Technical documentation
+├── GETTING_STARTED.md          # 👈 Beginner-friendly setup guide
+├── QUICK_REFERENCE.md          # 👈 Quick command reference
 ├── requirements.txt            # Python dependencies
 ├── .env.example               # Environment variable template
-├── .env                       # Your actual environment variables (create this)
+├── .env                       # Your environment variables (create this)
 ├── .gitignore                 # Git ignore rules
+│
 ├── config.py                  # Configuration management
-├── models.py                  # Pydantic data models
-├── notion_client.py           # Notion API integration
-├── linkedin_scraper.py        # LinkedIn job scraper with Playwright
-├── job_parser.py              # Job description parsing utilities
-├── scrape_jobs.py             # CLI tool for scraping jobs
-├── inspect_notion.py          # Notion database inspector utility
-├── example_notion_usage.py    # Usage examples for Notion integration
-└── [Additional modules to be created]
+├── models.py                  # Data structures for jobs, applications, etc.
+│
+├── notion_client.py           # Notion database integration
+├── linkedin_scraper.py        # LinkedIn job scraper
+├── job_parser.py              # Job description parsing & skill extraction
+├── claude_ai.py               # Claude AI integration for analysis & cover letters
+│
+├── scrape_jobs.py             # 🎯 CLI: Find and save jobs
+├── analyze_jobs.py            # 🎯 CLI: Analyze jobs & generate cover letters
+├── inspect_notion.py          # 🎯 CLI: Check Notion database
+│
+├── run_job_search.sh          # 👈 Helper script (Mac/Linux)
+├── run_job_search.bat         # 👈 Helper script (Windows)
+└── example_notion_usage.py    # Code examples
 ```
 
 ## Prerequisites
@@ -341,16 +363,21 @@ The LinkedIn scraper uses Playwright to automate browser interactions. Please no
 
 ## Roadmap
 
+**Core Features (Complete):**
 - [x] Notion integration (✓ Complete)
 - [x] LinkedIn job scraping (✓ Complete)
 - [x] Job parsing & skill extraction (✓ Complete)
-- [ ] Claude AI integration for job matching
-- [ ] Cover letter generation with Claude
+- [x] Claude AI integration for job matching (✓ Complete)
+- [x] Cover letter generation with Claude (✓ Complete)
+- [x] Beginner-friendly guides & documentation (✓ Complete)
+
+**Future Enhancements:**
 - [ ] Email discovery with Hunter.io
 - [ ] Web UI dashboard
-- [ ] Application analytics
+- [ ] Application analytics & insights
 - [ ] Interview scheduling assistant
 - [ ] Resume tailoring for specific jobs
+- [ ] Automated follow-up reminders
 
 ## Troubleshooting
 
