@@ -23,6 +23,9 @@ linkedin-job-agent/
 ├── config.py                  # Configuration management
 ├── models.py                  # Pydantic data models
 ├── notion_client.py           # Notion API integration
+├── linkedin_scraper.py        # LinkedIn job scraper with Playwright
+├── job_parser.py              # Job description parsing utilities
+├── scrape_jobs.py             # CLI tool for scraping jobs
 ├── inspect_notion.py          # Notion database inspector utility
 ├── example_notion_usage.py    # Usage examples for Notion integration
 └── [Additional modules to be created]
@@ -172,24 +175,99 @@ This demonstrates how to:
 
 ## Usage
 
-### Running the Application
+### Scraping LinkedIn Jobs
+
+The `scrape_jobs.py` CLI tool makes it easy to discover jobs and save them to Notion:
+
+#### Basic Job Search
 
 ```bash
-# Start the API server
-uvicorn main:app --reload
+# Search for jobs and save to Notion
+python scrape_jobs.py "Software Engineer" -l "San Francisco, CA" -n 25
 
-# Or run specific modules
-python agent.py
+# Search for remote jobs only
+python scrape_jobs.py "Python Developer" --remote -n 50
+
+# Search for Easy Apply jobs only
+python scrape_jobs.py "Data Scientist" --easy-apply -n 30
+
+# Just scrape without saving to Notion (preview mode)
+python scrape_jobs.py "Machine Learning Engineer" --no-notion
+```
+
+#### CLI Options
+
+```bash
+python scrape_jobs.py <keywords> [options]
+
+Arguments:
+  keywords              Job search keywords (e.g., "Software Engineer")
+
+Options:
+  -l, --location       Job location (e.g., "San Francisco, CA")
+  -n, --limit          Maximum number of jobs to scrape (default: 25)
+  -e, --easy-apply     Filter for Easy Apply jobs only
+  -r, --remote         Filter for remote jobs only
+  --no-notion          Don't save to Notion (just display results)
+  --no-match           Don't calculate match scores
+```
+
+#### Examples
+
+```bash
+# Find remote Python jobs
+python scrape_jobs.py "Python Backend Developer" --remote -n 50
+
+# Find Easy Apply data science jobs in NYC
+python scrape_jobs.py "Data Scientist" -l "New York, NY" --easy-apply -n 30
+
+# Find machine learning jobs (no location filter)
+python scrape_jobs.py "Machine Learning Engineer" -n 100
+
+# Preview jobs without saving to Notion
+python scrape_jobs.py "Full Stack Developer" -l "Seattle, WA" --no-notion
+```
+
+### Programmatic Usage
+
+You can also use the scraper programmatically in Python:
+
+```python
+import asyncio
+from linkedin_scraper import scrape_linkedin_jobs
+from notion_client import create_notion_tracker
+from models import ApplicationData, ApplicationStatus
+
+async def main():
+    # Scrape jobs
+    jobs = await scrape_linkedin_jobs(
+        keywords="Software Engineer",
+        location="San Francisco, CA",
+        limit=25,
+        remote=True,
+        easy_apply=True
+    )
+
+    # Save to Notion
+    tracker = create_notion_tracker()
+    for job in jobs:
+        application = ApplicationData(
+            job=job,
+            status=ApplicationStatus.NOT_STARTED
+        )
+        tracker.add_or_update_job(application)
+
+asyncio.run(main())
 ```
 
 ### Basic Workflow
 
-1. **Configure your profile** in `.env`
-2. **Set up your Notion database** for tracking
-3. **Run the job discovery** to find relevant positions
-4. **Review AI-generated match scores** and recommendations
-5. **Generate cover letters** for high-match jobs
-6. **Track applications** automatically in Notion
+1. **Configure your environment** - Set up `.env` with API keys
+2. **Test Notion integration** - Run `python inspect_notion.py`
+3. **Scrape jobs** - Use `scrape_jobs.py` to discover positions
+4. **Review in Notion** - Check your database for new jobs
+5. **Apply to jobs** - Use the tracked URLs to apply
+6. **Update status** - Mark jobs as Applied, Interview, etc. in Notion
 
 ## Configuration Options
 
@@ -231,23 +309,48 @@ mypy .
 ruff check .
 ```
 
-## Security Notes
+## Security & Legal Notes
 
-- Never commit your `.env` file
-- Keep API keys secure and rotate regularly
-- Review auto-submit applications before enabling
-- Be mindful of LinkedIn's terms of service
+- **Never commit your `.env` file** - Contains sensitive API keys and credentials
+- **Keep API keys secure** - Rotate regularly and use environment variables
+- **LinkedIn Terms of Service** - Be respectful of LinkedIn's ToS when scraping:
+  - Use reasonable rate limiting (built-in delays in scraper)
+  - Don't scrape excessively (recommend max 100 jobs per session)
+  - Consider using LinkedIn's official API for production use
+  - This tool is for personal job search automation only
+- **Review before auto-submit** - Always review applications before enabling automatic submission
+- **Data Privacy** - Job data is stored in your personal Notion database
+- **Authentication** - LinkedIn credentials are optional but enable access to more features
+
+## Important Notes on LinkedIn Scraping
+
+The LinkedIn scraper uses Playwright to automate browser interactions. Please note:
+
+- **Rate Limiting**: The scraper includes delays to avoid overwhelming LinkedIn's servers
+- **Authentication**: LinkedIn login is optional but may be required for some job listings
+- **Browser Mode**: Runs in headless mode by default (no GUI) for efficiency
+- **Captchas**: May encounter verification challenges if scraping too aggressively
+- **Session Management**: Maintains browser session during scraping
+- **Duplicate Prevention**: Automatically checks Notion to avoid re-adding existing jobs
+
+**Best Practices:**
+1. Start with small batches (25-50 jobs) to test
+2. Use specific search keywords to get relevant results
+3. Add delays between large scraping sessions
+4. Monitor LinkedIn account for any security warnings
 
 ## Roadmap
 
-- [ ] Job scraping module (LinkedIn automation)
-- [ ] Claude AI integration for job matching
-- [ ] Cover letter generation
 - [x] Notion integration (✓ Complete)
+- [x] LinkedIn job scraping (✓ Complete)
+- [x] Job parsing & skill extraction (✓ Complete)
+- [ ] Claude AI integration for job matching
+- [ ] Cover letter generation with Claude
 - [ ] Email discovery with Hunter.io
 - [ ] Web UI dashboard
 - [ ] Application analytics
 - [ ] Interview scheduling assistant
+- [ ] Resume tailoring for specific jobs
 
 ## Troubleshooting
 
